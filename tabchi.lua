@@ -206,7 +206,7 @@ function process(msg)
         end
       elseif text_:match("^لیست$") then
         local sudoers = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":sudoers")
-        local text = "Bot Sudoers:\n"
+        local text = "سودو های ربات🆔:\n"
         for i, v in pairs(sudoers) do
           text = tostring(text) .. tostring(i) .. ". " .. tostring(v)
         end
@@ -442,14 +442,15 @@ VER: 1.0
           }, dl_cb, nil)
         else
           local text = [[
-<b>پنل من😐</b>
+<b>پنل من💂🔧</b>
 ممبرا : ]] .. tostring(pvs) .. [[
 
 گروهای معمولی : ]] .. tostring(gps) .. [[
 
 سوپرگروه ها : ]] .. tostring(sgps) .. [[
 
- لینک های ذخیره : ]] .. tostring(links) .. [[کانتک هام					: ]] .. tostring(contacts)
+ لینک های ذخیره : ]] .. tostring(links) .. [[
+					کانتک هام👥					: ]] .. tostring(contacts)
           save_log("User " .. msg.sender_user_id_ .. ", Requested Panel")
           return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, "html")
         end
