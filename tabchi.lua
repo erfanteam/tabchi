@@ -186,23 +186,23 @@ function process(msg)
   process_updates()
   if is_sudo(msg) then
     if is_full_sudo(msg) then
-      if text_:match("^(addsudo) (%d+)") then
+      if text_:match("^(سودوکن) (%d+)") then
         local matches = {
-          text_:match("^(addsudo) (%d+)")
+          text_:match("^(سودوکن) (%d+)")
         }
         if #matches == 2 then
           redis:sadd("tabchi:" .. tostring(tabchi_id) .. ":sudoers", tonumber(matches[2]))
-          save_log("User " .. msg.sender_user_id_ .. ", Added " .. matches[2] .. " As Sudo")
-          return tostring(matches[2]) .. " Added to Sudo Users"
+          save_log("ایدی " .. msg.sender_user_id_ .. ", اضافه   " .. matches[2] .. " As Sudo")
+          return tostring(matches[2]) .. " سودو شد🤘"
         end
-      elseif text_:match("^(remsudo) (%d+)") then
+      elseif text_:match("^(حذف سودو) (%d+)") then
         local matches = {
-          text_:match("^(remsudo) (%d+)")
+          text_:match("^(حذف سودو) (%d+)")
         }
         if #matches == 2 then
           redis:srem("tabchi:" .. tostring(tabchi_id) .. ":sudoers", tonumber(matches[2]))
-          save_log("User " .. msg.sender_user_id_ .. ", Removed " .. matches[2] .. " From Sudoers")
-          return tostring(matches[2]) .. " Removed From Sudo Users"
+          save_log("ایدی " .. msg.sender_user_id_ .. ", Removed " .. matches[2] .. " From Sudoers")
+          return tostring(matches[2]) .. " از سودو ها سیک شد😐"
         end
       elseif text_:match("^sudolist$") then
         local sudoers = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":sudoers")
