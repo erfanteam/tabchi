@@ -213,7 +213,7 @@ function process(msg)
         save_log("User " .. msg.sender_user_id_ .. ", Requested Sudo List")
         return text
       elseif text_:match("^(لاگ)$") then
-        tdcli.send_file(msg.chat_id_, "Document", "لاگ_های_تبچی" .. tostring(tabchi_id) .. ".txt", "لاگ  تبچی" .. tostring(tabchi_id) .. " !")
+        tdcli.send_file(msg.chat_id_, "Document", "لاگ_های_تبچی" .. tostring(tabchi_id) .. ".txt", "Tabchi " .. tostring(tabchi_id) .. "logs!")
         save_log("کاربر " .. msg.sender_user_id_ .. ", لاگ خواسته شده")
       else
         local matches = {
@@ -239,7 +239,7 @@ function process(msg)
         text_:match("^(اضافه کردن) '(.*)' (.*)")
       }
       if #matches == 3 then
-        redis:hset("tabchi:" .. tostring(tabchi_id) .. ":جواب ها", matches[2], matches[3])
+        redis:hset("tabchi:" .. tostring(tabchi_id) .. ":answers", matches[2], matches[3])
         redis:sadd("tabchi:" .. tostring(tabchi_id) .. ":answerslist", matches[2])
         save_log("کاربر " .. msg.sender_user_id_ .. ", جواب کلمه" .. matches[2] .. " را " .. maches[3])
         return "جواب برای کلمه🔜" .. tostring(matches[2]) .. " ست شد برای🔜:\n" .. tostring(matches[3])
@@ -299,7 +299,7 @@ function process(msg)
           local _ = redis:rem("tabchi:" .. tostring(tabchi_id) .. ":savedlinks", v)
         end
       end
-      writefile("لینکها_" .. tostring(tabchi_id) .. ".txt", text)
+      writefile("tabchi" .. tostring(tabchi_id) .. "links.txt", text)
       tdcli.send_file(msg.chat_id_, "Document", "tabchi_" .. tostring(tabchi_id) .. "_links.txt", "Tabchi " .. tostring(tabchi_id) .. " Links!")
       save_log("User " .. msg.sender_user_id_ .. ", Requested Contact List")
       return io.popen("rm -rf tabchi_" .. tostring(tabchi_id) .. "_links.txt"):read("*all")
@@ -362,9 +362,9 @@ VER: 1.0
 			]]
       return text
 
-    elseif text_:match("(ان بلاک) (%d+)") then
+    elseif text_:match("(انبلاک) (%d+)") then
       local matches = {
-        text_:match("(ان بلاک) (%d+)")
+        text_:match("(انبلاک) (%d+)")
       }
       if #matches == 2 then
         tdcli.unblockUser(tonumber(matches[2]))
@@ -450,6 +450,7 @@ VER: 1.0
 سوپرگروه ها : ]] .. tostring(sgps) .. [[
 
  لینک های ذخیره : ]] .. tostring(links) .. [[
+					
 					کانتک هام👥					: ]] .. tostring(contacts)
           save_log("User " .. msg.sender_user_id_ .. ", Requested Panel")
           return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, "html")
