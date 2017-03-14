@@ -6,7 +6,7 @@
 
 #نصب
 ```
-git clone https://github.com/TeleRock/locki.git && cd locki && chmod 777 install.sh && chmod +x locki.sh && ./install.sh
+git clone https://github.com/erfanteam/tabchi.git && cd tabchi && chmod 777 install.sh && chmod +x locki.sh && ./install.sh
 ```
  
 #ساختن و ران کردن
@@ -52,9 +52,8 @@ Enter Sudo Id
 کدهای زیر را بترتیب بزنید
 
 ```
-cd locki
-
-screen ./tabchi-1.sh
+cd tabchi
+./tabchi-1.sh
 ```
 
 باز هم بجای 1 شماره دلخواهی که وارد کرده بودین
@@ -94,13 +93,10 @@ lua creator.lua
 
 
 ```
-cd locki
-
+cd tabchi
 ./locki.sh
 ```
-help :نمایش دستورات در گروه
+راهنما :نمایش دستورات در گروه
 
 
-#Opened By: [@Iocki](http://telegram.me/Iocki)
-
-#Developer: Amirsbss
+#dev: [erfan](http://telegram.me/o_o_erfan_o_o)
