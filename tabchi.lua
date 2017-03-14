@@ -186,9 +186,9 @@ function process(msg)
   process_updates()
   if is_sudo(msg) then
     if is_full_sudo(msg) then
-      if text_:match("^(سودوکن) (%d+)") then
+      if text_:match("^(سودو کن) (%d+)") then
         local matches = {
-          text_:match("^(سودوکن) (%d+)")
+          text_:match("^(سودو کن) (%d+)")
         }
         if #matches == 2 then
           redis:sadd("tabchi:" .. tostring(tabchi_id) .. ":sudoers", tonumber(matches[2]))
@@ -204,17 +204,17 @@ function process(msg)
           save_log("ایدی " .. msg.sender_user_id_ .. ", Removed " .. matches[2] .. " From Sudoers")
           return tostring(matches[2]) .. " از سودو ها سیک شد😐"
         end
-      elseif text_:match("^sudolist$") then
-        local sudoers = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":sudoers")
-        local text = "Bot Sudoers :\n"
+      elseif text_:match("^لیست$") then
+        local sudoers = redis:smembers("لیست سودو ها🆔:" .. tostring(tabchi_id) .. "")
+        local text = "سودوها🆔:\n"
         for i, v in pairs(sudoers) do
           text = tostring(text) .. tostring(i) .. ". " .. tostring(v)
         end
         save_log("User " .. msg.sender_user_id_ .. ", Requested Sudo List")
         return text
-      elseif text_:match("^(sendlogs)$") then
-        tdcli.send_file(msg.chat_id_, "Document", "tabchi_" .. tostring(tabchi_id) .. "_logs.txt", "Tabchi " .. tostring(tabchi_id) .. " Logs!")
-        save_log("User " .. msg.sender_user_id_ .. ", Requested Logs")
+      elseif text_:match("^(لاگ)$") then
+        tdcli.send_file(msg.chat_id_, "Document", "لاگ_های_تبچی" .. tostring(tabchi_id) .. ".txt", "لاگ  تبچی" .. tostring(tabchi_id) .. " !")
+        save_log("کاربر " .. msg.sender_user_id_ .. ", لاگ خواسته شده")
       else
         local matches = {
           text_:match("^[$](.*)")
@@ -234,35 +234,35 @@ function process(msg)
         save_log("User " .. msg.sender_user_id_ .. ", Sent A Pm To " .. matches[2] .. ", Content : " .. matches[3])
         return "Sent!"
       end
-    elseif text_:match("^(setanswer) '(.*)' (.*)") then
+    elseif text_:match("^(اضافه کردن) '(.*)' (.*)") then
       local matches = {
-        text_:match("^(setanswer) '(.*)' (.*)")
+        text_:match("^(اضافه کردن) '(.*)' (.*)")
       }
       if #matches == 3 then
-        redis:hset("tabchi:" .. tostring(tabchi_id) .. ":answers", matches[2], matches[3])
+        redis:hset("tabchi:" .. tostring(tabchi_id) .. ":جواب ها", matches[2], matches[3])
         redis:sadd("tabchi:" .. tostring(tabchi_id) .. ":answerslist", matches[2])
-        save_log("User " .. msg.sender_user_id_ .. ", Set Answer Of " .. matches[2] .. " To " .. maches[3])
-        return "Answer for " .. tostring(matches[2]) .. " set to :\n" .. tostring(matches[3])
+        save_log("کاربر " .. msg.sender_user_id_ .. ", جواب کلمه" .. matches[2] .. " را " .. maches[3])
+        return "جواب برای کلمه🔜" .. tostring(matches[2]) .. " ست شد برای🔜:\n" .. tostring(matches[3])
       end
-    elseif text_:match("^(delanswer) (.*)") then
+    elseif text_:match("^(حذف کردن) (.*)") then
       local matches = {
-        text_:match("^(delanswer) (.*)")
+        text_:match("^(حذف کردن) (.*)")
       }
       if #matches == 2 then
         redis:hdel("tabchi:" .. tostring(tabchi_id) .. ":answers", matches[2])
         redis:srem("tabchi:" .. tostring(tabchi_id) .. ":answerslist", matches[2])
         save_log("User " .. msg.sender_user_id_ .. ", Deleted Answer Of " .. matches[2])
-        return "Answer for " .. tostring(matches[2]) .. " deleted"
+        return "جواب   " .. tostring(matches[2]) .. "کیر شد😐❤️"
       end
-    elseif text_:match("^answers$") then
-      local text = "Bot auto answers :\n"
-      local answrs = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":answerslist")
+    elseif text_:match("^جواب ها$") then
+      local text = "لیست جواب ها🔧:\n"
+      local answrs = redis:smembers("لیست جواب های تبچی:" .. tostring(tabchi_id) .. "")
       for i, v in pairs(answrs) do
         text = tostring(text) .. tostring(i) .. ". " .. tostring(v) .. " : " .. tostring(redis:hget("tabchi:" .. tostring(tabchi_id) .. ":answers", v)) .. "\n"
       end
       save_log("User " .. msg.sender_user_id_ .. ", Requested Answers List")
       return text
-    elseif text_:match("^addmembers$") and msg.chat_type_ ~= "private" then
+    elseif text_:match("^ادد کن$") and msg.chat_type_ ~= "private" then
       local add_all
       function add_all(extra, result)
         local usrs = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":pvis")
@@ -280,7 +280,7 @@ function process(msg)
         limit_ = 999999999
       }, add_all, {})
       save_log("User " .. msg.sender_user_id_ .. ", Used AddMembers In " .. msg.chat_id_)
-      return "Adding members to group..."
+      return "دارم اد میکنم..."
     elseif text_:match("^contactlist$") then
       tdcli_function({
         ID = "SearchContacts",
@@ -289,8 +289,8 @@ function process(msg)
       }, contact_list, {
         chat_id_ = msg.chat_id_
       })
-    elseif text_:match("^exportlinks$") then
-      local text = "Group Links :\n"
+    elseif text_:match("^لینک ها$") then
+      local text = "لینک گروها🤘:\n"
       local links = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":savedlinks")
       for i, v in pairs(links) do
         if v:len() == 51 then
@@ -299,18 +299,18 @@ function process(msg)
           local _ = redis:rem("tabchi:" .. tostring(tabchi_id) .. ":savedlinks", v)
         end
       end
-      writefile("tabchi_" .. tostring(tabchi_id) .. "_links.txt", text)
+      writefile("لینکها_" .. tostring(tabchi_id) .. ".txt", text)
       tdcli.send_file(msg.chat_id_, "Document", "tabchi_" .. tostring(tabchi_id) .. "_links.txt", "Tabchi " .. tostring(tabchi_id) .. " Links!")
       save_log("User " .. msg.sender_user_id_ .. ", Requested Contact List")
       return io.popen("rm -rf tabchi_" .. tostring(tabchi_id) .. "_links.txt"):read("*all")
-    elseif text_:match("(block) (%d+)") then
+    elseif text_:match("(بلاک) (%d+)") then
       local matches = {
-        text_:match("(block) (%d+)")
+        text_:match("(بلاک) (%d+)")
       }
       if #matches == 2 then
         tdcli.blockUser(tonumber(matches[2]))
         save_log("User " .. msg.sender_user_id_ .. ", Blocked " .. matches[2])
-        return "User blocked"
+        return "بلاک شد😐🤘"
       end
   elseif text_:match("^help$") and is_sudo(msg) then
       local text = [[block id  
@@ -356,21 +356,17 @@ addmembers
 exportlinks                        
 دريافت لينک هاي ذخيره شده توسط ربات                  
 contactlist                      
-دريافت مخاطبان ذخيره شده توسط ربات                     
-addedcontact on ya off                        
-ارسال مخاطب ربات هنگامی که کسی شماره خود را ارسال میکند         
-
-help >> @Iocki]]
+در]]
       return text
 
-    elseif text_:match("(unblock) (%d+)") then
+    elseif text_:match("(ان بلاک) (%d+)") then
       local matches = {
-        text_:match("(unblock) (%d+)")
+        text_:match("(ان بلاک) (%d+)")
       }
       if #matches == 2 then
         tdcli.unblockUser(tonumber(matches[2]))
-        save_log("User " .. msg.sender_user_id_ .. ", Unlocked " .. matches[2])
-        return "User unblocked"
+        save_log("ایدی " .. msg.sender_user_id_ .. ", Unlocked " .. matches[2])
+        return "ان بلاک شد😀"
       end
     elseif text_:match("^(s2a) (.*) (.*)") then
       local matches = {
@@ -410,7 +406,7 @@ help >> @Iocki]]
         end
         save_log("User " .. msg.sender_user_id_ .. ", Used S2A " .. matches[2] .. " For " .. matches[3])
       end
-    elseif text_:match("^panel$") then
+    elseif text_:match("^پنل$") then
       tdcli.sendMessage(0, 0, 1, "h", 1, "html")
       tdcli.searchPublicChat("m")
       local contact_num
@@ -443,16 +439,14 @@ help >> @Iocki]]
           }, dl_cb, nil)
         else
           local text = [[
-<b>تنظیمات</b>
-کاربران : ]] .. tostring(pvs) .. [[
+<b>پنل من😐</b>
+ممبرا : ]] .. tostring(pvs) .. [[
 
 گروهای معمولی : ]] .. tostring(gps) .. [[
 
 سوپرگروه ها : ]] .. tostring(sgps) .. [[
 
- لینک های ذخیره : ]] .. tostring(links) .. [[
-
-شماره های ثبت شده : ]] .. tostring(contacts)
+ لینک های ذخیره : ]] .. tostring(links) .. [[کانتک هام					: ]] .. tostring(contacts)
           save_log("User " .. msg.sender_user_id_ .. ", Requested Panel")
           return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, "html")
         end
@@ -469,66 +463,65 @@ help >> @Iocki]]
         query_ = query,
         offset_ = 0
       }, inline, nil) end
-    elseif text_:match("^(addedmsg) (.*)") then
+    elseif text_:match("^(پیام اد شدن) (.*)") then
       local matches = {
-        text_:match("^(addedmsg) (.*)")
+        text_:match("^(پیام اد شدن) (.*)")
       }
       if #matches == 2 then
-        if matches[2] == "on" then
+        if matches[2] == "روشن" then
           redis:set("tabchi:" .. tostring(tabchi_id) .. ":addedmsg", true)
-          save_log("User " .. msg.sender_user_id_ .. ", Turned On Added Message")
-          return "Added Message Turned On"
-        elseif matches[2] == "off" then
+          save_log("User " .. msg.sender_user_id_ .. ", پیام اد شدن روشن شد😀")
+          return "پیام اد شدن روشن شد😀"
+        elseif matches[2] == "خاموش" then
           redis:del("tabchi:" .. tostring(tabchi_id) .. ":addedmsg")
-          save_log("User " .. msg.sender_user_id_ .. ", Turned Off Added Message")
-          return "Added Message Turned Off"
+          save_log("User " .. msg.sender_user_id_ .. ", پیام اد شدن خاموش شد😐")
+          return "پیام اد شدن خاموش شد😐"
         end
       end
-    elseif text_:match("^(addedcontact) (.*)") then
+    elseif text_:match("^(فرستادن کانتکت) (.*)") then
       local matches = {
-        text_:match("^(addedcontact) (.*)")
+        text_:match("^(فرستادن کانتکت) (.*)")
       }
       if #matches == 2 then
-        if matches[2] == "on" then
+        if matches[2] == "روشن" then
           redis:set("tabchi:" .. tostring(tabchi_id) .. ":addedcontact", true)
           save_log("User " .. msg.sender_user_id_ .. ", Turned On Added Contact")
-          return "Added Contact Turned On"
-        elseif matches[2] == "off" then
+          return " فرستادن کانتکت روشن شد😀"
+        elseif matches[2] == "خاموش" then
           redis:del("tabchi:" .. tostring(tabchi_id) .. ":addedcontact")
           save_log("User " .. msg.sender_user_id_ .. ", Turned Off Added Contact")
-          return "Added Contact Turned Off"
+          return "فرستادن کانتکت خاموش شد😐"
         end
       end
-    elseif text_:match("^(markread) (.*)") then
+    elseif text_:match("^(بازدید) (.*)") then
       local matches = {
-        text_:match("^(markread) (.*)")
+        text_:match("^(بازدید) (.*)")
       }
       if #matches == 2 then
-        if matches[2] == "on" then
+        if matches[2] == "روشن" then
           redis:set("tabchi:" .. tostring(tabchi_id) .. ":markread", true)
           save_log("User " .. msg.sender_user_id_ .. ", Turned On Markread")
-          return "Markread Turned On"
-        elseif matches[2] == "off" then
+          return "بازدید پیام ها روشن شد😐🔧"
+        elseif matches[2] == "خاموش" then
           redis:del("tabchi:" .. tostring(tabchi_id) .. ":markread")
           save_log("User " .. msg.sender_user_id_ .. ", Turned Off Markread")
-          return "Markread Turned Off"
+          return "بازدید پیام ها خاموش شد😑🔧"
         end
       end
-    elseif text_:match("^(setaddedmsg) (.*)") then
+    elseif text_:match("^(پیام اد) (.*)") then
       local matches = {
-        text_:match("^(setaddedmsg) (.*)")
+        text_:match("^(پیام اد) (.*)")
       }
       if #matches == 2 then
         redis:set("tabchi:" .. tostring(tabchi_id) .. ":addedmsgtext", matches[2])
         save_log("User " .. msg.sender_user_id_ .. ", Changed Added Message To : " .. matches[2])
         return [[
-New Added Message Set
-Message :
+پیام اد کردن تغییر کرد به🙄:
 ]] .. tostring(matches[2])
       end
-    elseif text_:match("^(bc) (.*)") then
+    elseif text_:match("^(بی سی) (.*)") then
       local matches = {
-        text_:match("^(bc) (.*)")
+        text_:match("^(بی سی) (.*)")
       }
       if #matches == 2 then
         local all = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":all")
@@ -553,14 +546,14 @@ Message :
           }, dl_cb, nil)
         end
         save_log("User " .. msg.sender_user_id_ .. ", Used BC, Content " .. matches[2])
-        return "Sent!"
+        return "فرستادم😀🔧"
       end
-    elseif text_:match("^(fwd) (.*)$") then
+    elseif text_:match("^(فروارد) (.*)$") then
       local matches = {
-        text_:match("^(fwd) (.*)$")
+        text_:match("^(فروارد) (.*)$")
       }
       if #matches == 2 then
-        if matches[2] == "all" then
+        if matches[2] == "همه" then
           local all = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":all")
           local id = msg.reply_to_message_id_
           for i, v in pairs(all) do
@@ -592,7 +585,7 @@ Message :
             }, dl_cb, nil)
           end
           save_log("User " .. msg.sender_user_id_ .. ", Used Fwd Users")
-        elseif matches[2] == "gps" then
+        elseif matches[2] == "گروه" then
           local all = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":groups")
           local id = msg.reply_to_message_id_
           for i, v in pairs(all) do
@@ -608,7 +601,7 @@ Message :
             }, dl_cb, nil)
           end
           save_log("User " .. msg.sender_user_id_ .. ", Used Fwd Gps")
-        elseif matches[2] == "sgps" then
+        elseif matches[2] == "سوپر گروه" then
           local all = redis:smembers("tabchi:" .. tostring(tabchi_id) .. ":channels")
           local id = msg.reply_to_message_id_
           for i, v in pairs(all) do
@@ -623,15 +616,15 @@ Message :
               from_background_ = 1
             }, dl_cb, nil)
           end
-          save_log("User " .. msg.sender_user_id_ .. ", Used Fwd Sgps")
+          save_log(" " .. msg.sender_user_id_ .. ", Used Fwd Sgps")
         end
       end
-      return "Sent!"
+      return "فرستادم😀🔧"
     else
       local matches = {
-        text_:match("^(echo) (.*)")
+        text_:match("^(اکو) (.*)")
       }
-      if text_:match("^(echo) (.*)") and #matches == 2 then
+      if text_:match("^(اکو) (.*)") and #matches == 2 then
         save_log("User " .. msg.sender_user_id_ .. ", Used Echo, Content : " .. matches[2])
         return matches[2]
       end
