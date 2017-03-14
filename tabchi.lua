@@ -205,8 +205,8 @@ function process(msg)
           return tostring(matches[2]) .. " از سودو ها سیک شد😐"
         end
       elseif text_:match("^لیست$") then
-        local sudoers = redis:smembers("لیست سودو ها🆔:" .. tostring(tabchi_id) .. "")
-        local text = "سودوها🆔:\n"
+        local sudoers = redis:smembers("tabchi:" .. tostring(tabchi_id) .. "")
+        local text = "Bot Sudoers:\n"
         for i, v in pairs(sudoers) do
           text = tostring(text) .. tostring(i) .. ". " .. tostring(v)
         end
